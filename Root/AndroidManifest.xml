@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.motorola.root">
+    <uses-sdk android:minSdkVersion="15" android:targetSdkVersion="17"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"></uses-permission>
+    <uses-permission android:name="android.permission.USE_CREDENTIALS"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+    <uses-permission android:name="android.permission.NETWORK"></uses-permission>
+    <application android:icon="@drawable/icon" android:label="@string/app_name">
+        <activity android:name=".activities.Leaves" android:label="Children">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".activities.RootLogin" android:label="Parent Login">
+        </activity>
+        <activity
+            android:name=".activities.Tasks"
+            android:label="Tasks Status" />
+        <activity
+            android:name=".activities.ComposeTask"
+            android:label="Add Task" />
+        <activity
+            android:name=".activities.GoogleAppEngineAuthentication"
+            android:label="Authentication" />
+
+        <provider
+            android:authorities="com.motorola.root.providers.ChildrenProvider"
+            android:exported="false"
+            android:label="ChildrenProvider"
+            android:name=".providers.ChildrenProvider">
+        </provider>
+
+        <provider
+            android:authorities="com.motorola.root.providers.TasksProvider"
+            android:exported="false"
+            android:label="TasksProvider"
+            android:name=".providers.TasksProvider">
+        </provider>
+
+        <service
+            android:name=".services.SyncService"
+            android:label="SyncService" />
+        <receiver
+            android:name=".receivers.TasksUpdateNotificationReceiver"
+            android:label="TasksUpdateNotificationReceiver">
+            <intent-filter android:priority="0">
+                <action android:name="com.motorola.root.tasks.updated">
+                </action>
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>

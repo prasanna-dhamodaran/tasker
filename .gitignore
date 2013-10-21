@@ -4,3 +4,10 @@
 *.jar
 *.war
 *.ear
+Leaf/.idea/
+*.iml
+Leaf/gen/
+Leaf/out/
+Root/.idea/
+Root/gen/
+Root/out/

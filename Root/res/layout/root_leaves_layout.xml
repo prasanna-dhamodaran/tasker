@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/root_leaves_leaf_id_edittext"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/root_leaves_add_leaf_button"
+        android:singleLine="true"
+        android:hint="Enter new child id here"
+        android:layout_marginTop="10dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Child"
+        android:id="@+id/root_leaves_add_leaf_button"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentRight="true"
+        android:layout_alignBottom="@+id/root_leaves_leaf_id_edittext"
+        android:singleLine="false"
+        android:layout_alignTop="@+id/root_leaves_leaf_id_edittext" />
+
+    <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/root_leaves_list" android:layout_alignParentLeft="true" android:layout_alignParentTop="false"
+        android:layout_below="@+id/root_leaves_leaf_id_edittext"
+        android:layout_marginTop="10dp"
+        android:layout_above="@+id/root_logout_button" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Verifying child id..."
+        android:id="@+id/root_leaves_new_leaf_id_verification_status_textview"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:background="#696969"
+        android:gravity="center" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Logout"
+        android:id="@+id/root_logout_button"
+        android:layout_above="@+id/root_leaves_new_leaf_id_verification_status_textview"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true" />
+</RelativeLayout>

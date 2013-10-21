@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <packaging>war</packaging>
+    <version>1.0-SNAPSHOT</version>
+
+    <groupId>ParentalController</groupId>
+    <artifactId>ParentalController</artifactId>
+
+    <properties>
+        <appengine.app.version>1</appengine.app.version>
+        <appengine.target.version>1.8.5</appengine.target.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <datanucleus.appengine.version>2.1.2</datanucleus.appengine.version>
+        <datanucleus.core.version>3.1.3</datanucleus.core.version>
+        <datanucleus.enhancer.version>3.1.1</datanucleus.enhancer.version>
+        <datanucleus.jdo.api.version>3.1.3</datanucleus.jdo.api.version>
+        <datanucleus.jpa.api.version>3.1.3</datanucleus.jpa.api.version>
+        <javax.jdo.version>3.0.1</javax.jdo.version>
+
+        <javax.servlet.version>2.5</javax.servlet.version>
+        <jstl.version>1.2</jstl.version>
+        <jersey.json.version>1.17.1</jersey.json.version>
+        <javax.transaction.version>1.1</javax.transaction.version>
+
+        <datanucleus.maven.plugin.version>1.1.4</datanucleus.maven.plugin.version>
+        <maven.war.plugin.version>2.3</maven.war.plugin.version>
+        <maven.apache.plugins.version>2.5.1</maven.apache.plugins.version>
+
+        <maven.compiler.plugin.source.version>1.6</maven.compiler.plugin.source.version>
+        <maven.compiler.plugin.target.version>1.6</maven.compiler.plugin.target.version>
+    </properties>
+
+    <dependencies>
+        <!-- Compile/runtime dependencies -->
+        <dependency>
+            <groupId>com.google.appengine</groupId>
+            <artifactId>appengine-api-1.0-sdk</artifactId>
+            <version>${appengine.target.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>${javax.servlet.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>jstl</groupId>
+            <artifactId>jstl</artifactId>
+            <version>${jstl.version}</version>
+        </dependency>
+
+        <!-- Test Dependencies -->
+        <dependency>
+            <groupId>com.google.appengine</groupId>
+            <artifactId>appengine-testing</artifactId>
+            <version>${appengine.target.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.appengine</groupId>
+            <artifactId>appengine-api-stubs</artifactId>
+            <version>${appengine.target.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Endpoints -->
+        <dependency>
+            <groupId>com.google.appengine</groupId>
+            <artifactId>appengine-endpoints</artifactId>
+            <version>${appengine.target.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.appengine.orm</groupId>
+            <artifactId>datanucleus-appengine</artifactId>
+            <version>${datanucleus.appengine.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-json</artifactId>
+            <version>${jersey.json.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.datanucleus</groupId>
+            <artifactId>datanucleus-api-jdo</artifactId>
+            <version>${datanucleus.jdo.api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.datanucleus</groupId>
+            <artifactId>datanucleus-api-jpa</artifactId>
+            <version>${datanucleus.jpa.api.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <version>${maven.apache.plugins.version}</version>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${maven.compiler.plugin.source.version}</source>
+                    <target>${maven.compiler.plugin.target.version}</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>${maven.war.plugin.version}</version>
+                <configuration>
+                    <archiveClasses>true</archiveClasses>
+                    <webResources>
+                        <!-- in order to interpolate version from pom into appengine-web.xml -->
+                        <resource>
+                            <directory>${basedir}/src/main/webapp/WEB-INF</directory>
+                            <filtering>true</filtering>
+                            <targetPath>WEB-INF</targetPath>
+                        </resource>
+                        <resource>
+                            <directory>${project.build.directory}/generated-sources/appengine-endpoints</directory>
+                            <includes>
+                                <include>WEB-INF/*.discovery</include>
+                                <include>WEB-INF/*.api</include>
+                            </includes>
+                            <filtering>true</filtering>
+                        </resource>
+                    </webResources>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>com.google.appengine</groupId>
+                <artifactId>appengine-maven-plugin</artifactId>
+                <version>${appengine.target.version}</version>
+                <configuration>
+                    <enableJarClasses>false</enableJarClasses>
+                    <oauth2>false</oauth2>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>endpoints_get_discovery_doc</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--
+                This plug-in "enhances" your domain model objects (i.e.
+                makes them persistent for datanucleus)
+            -->
+            <plugin>
+                <groupId>org.datanucleus</groupId>
+                <artifactId>maven-datanucleus-plugin</artifactId>
+                <version>${datanucleus.maven.plugin.version}</version>
+                <configuration>
+                    <!--
+                        Make sure this path contains your persistent
+                        classes!
+                    -->
+                    <verbose>true</verbose>
+                    <enhancerName>ASM</enhancerName>
+                    <api>JDO</api>
+                    <mappingIncludes>**/model/*.class</mappingIncludes>
+                    <!--<metadataDirectory>${project.build.outputDirectory}</metadataDirectory>
+                    <metadataIncludes>**/model/**/*.class</metadataIncludes>-->
+                    <!--<log4jConfiguration>${basedir}/log4j.properties</log4jConfiguration>-->
+                    <fork>false</fork>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>enhance</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.datanucleus</groupId>
+                        <artifactId>datanucleus-core</artifactId>
+                        <version>${datanucleus.core.version}</version>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>javax.transaction</groupId>
+                                <artifactId>transaction-api</artifactId>
+                            </exclusion>
+                            <!--<exclusion>
+                                <groupId>org.codehaus.jackson</groupId>
+                                <artifactId>jackson-mapper-asl</artifactId>
+                            </exclusion>-->
+                        </exclusions>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.datanucleus</groupId>
+                        <artifactId>datanucleus-enhancer</artifactId>
+                        <version>${datanucleus.enhancer.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.datanucleus</groupId>
+                        <artifactId>datanucleus-api-jdo</artifactId>
+                        <version>${datanucleus.jdo.api.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.datanucleus</groupId>
+                        <artifactId>datanucleus-api-jpa</artifactId>
+                        <version>${datanucleus.jpa.api.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>javax.jdo</groupId>
+                        <artifactId>jdo-api</artifactId>
+                        <version>${javax.jdo.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>javax.transaction</groupId>
+                        <artifactId>jta</artifactId>
+                        <version>${javax.transaction.version}</version>
+                    </dependency>
+                    <!-- Endpoints -->
+                    <dependency>
+                        <groupId>com.google.appengine</groupId>
+                        <artifactId>appengine-endpoints</artifactId>
+                        <version>${appengine.target.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
